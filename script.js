@@ -10,6 +10,7 @@ function initializeGrid() {
         }
         document.querySelector('.gridContainer').appendChild(row);
     }
+    addGridListeners();
 }
 
 //function to remove all children of class gridContainer div
@@ -33,6 +34,9 @@ function generateGrid(size) //size is the number of rows and columns
         }
         document.querySelector('.gridContainer').appendChild(row);
     }
+    addGridListeners();
+    //remove the gridContainer div's border
+    document.querySelector('.gridContainer').style.border = 'none';
 }
 
 //function to change the color of the div to a random rgb value, and add the colored class to it
@@ -52,6 +56,8 @@ function colorGrid(e) { //this function will be called each time a gridItem is h
         //lower the rgb values of the color by 10% to darken it
         let color = gridItem.style.backgroundColor;
         let colorArray = color.split(',');
+        colorArray[0] = colorArray[0].substring(4);
+        colorArray[2] = colorArray[2].substring(0, colorArray[2].length - 1);
         colorArray[0] = Math.floor(colorArray[0] * 0.9);
         colorArray[1] = Math.floor(colorArray[1] * 0.9);
         colorArray[2] = Math.floor(colorArray[2] * 0.9);
@@ -70,10 +76,6 @@ function resetGrid() {
     });
 }
 
-//adding an event listener to the reset button to call the resetGrid function
-const resetButton = document.querySelector('#reset');
-resetButton.addEventListener('click', resetGrid);
-
 //adding an event listener to the create new grid button to call the generateGrid function, uses the grid size input value
 //if the input value is not a number or is less than 1 or greater than 100, the grid will not be generated
 //if a grid already exists, it will be removed before the new grid is generated
@@ -86,11 +88,13 @@ newGridButton.addEventListener('click', () => {
     }
 });
 
-//adding an event listener to all gridItems to call colorGrid function when they are hovered over
-const gridItems = document.querySelectorAll('.gridItem');
-gridItems.forEach(item => {
-    item.addEventListener('mouseover', alert(e));
-});
+//adding an event listener to all gridItems to call colorGrid function when they are hovered over\
+function addGridListeners() {
+    const gridItems = document.querySelectorAll('.gridItem');
+    gridItems.forEach(item => {
+        item.addEventListener('mouseover', colorGrid);
+    });
+}
 
 //function to change a gridItem's color to black
 function blackGrid(e) {
@@ -98,4 +102,8 @@ function blackGrid(e) {
     gridItem.style.backgroundColor = 'black';
 }
 
-initializeGrid();
+initializeGrid(); //initializes the grid on page load
+
+//adding an event listener to the reset button to call the resetGrid function
+const resetButton = document.querySelector('#reset');
+resetButton.addEventListener('click', resetGrid);
